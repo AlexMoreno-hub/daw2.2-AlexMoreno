@@ -1,32 +1,44 @@
 <?php
 require_once "_varios.php";
 
-$pdo = obtenerPdoConexionBD();
+$conexion = obtenerPdoConexionBD();
 
+// Se recogen los datos del formulario de la request.
 $id = (int)$_REQUEST["id"];
 $nombre = $_REQUEST["nombre"];
-$telefono= $_REQUEST["telefono"];
-$personaCategoriaId= $_REQUEST["categoriaId"];
+$apellidos = $_REQUEST["apellidos"];
+$telefono = $_REQUEST["telefono"];
+$categoriaId = (int)$_REQUEST["categoriaId"];
 
+// Si id es -1 quieren INSERTAR una nueva entrada ($nueva_entrada tomará true).
+// Sin embargo, si id NO es -1 quieren ACTUALIZAR la ficha de una persona existente
+// (y $nueva_entrada tomar false).
 $nuevaEntrada = ($id == -1);
 
 if ($nuevaEntrada) {
-    $sql = "INSERT INTO persona (nombre, telefono, categoria_id) VALUES (?, ?, ?)";
-    $parametros = [$nombre, $telefono, $personaCategoriaId];
+    // Quieren CREAR una nueva entrada, así que es un INSERT.
+    $sql = "INSERT INTO persona (nombre, apellidos, telefono, categoriaId) VALUES (?,?, ?, ?)";
+    $parametros = [$nombre, $apellidos , $telefono, $categoriaId];
 } else {
-    $sql = "UPDATE persona SET nombre=?, telefono=?, categoria_id=? WHERE id=?";
-    $parametros = [$nombre, $telefono, $personaCategoriaId, $id];
+    // Quieren MODIFICAR una persona existente y es un UPDATE.
+    $sql = "UPDATE persona SET nombre=?, apellidos=?,  telefono=?, categoriaId=? WHERE id=?";
+    $parametros = [$nombre, $apellidos, $telefono, $categoriaId, $id];
 }
 
-$sentencia = $pdo->prepare($sql);
-$sql_con_exito = $sentencia->execute($parametros);
+$sentencia = $conexion->prepare($sql);
+// Esta llamada devuelve true o false según si la ejecución de la sentencia ha ido bien o mal.
+$sqlConExito = $sentencia->execute($parametros); // Se añaden los parámetros a la consulta preparada.
 
-$una_fila_afectada = ($sentencia->rowCount() == 1);
-$ninguna_fila_afectada = ($sentencia->rowCount() == 0);
+//Se consulta la cantidad de filas afectadas por la ultima sentencia SQL.
+$numFilasAfectadas = $sentencia->rowCount();
+$unaFilaAfectada = ($numFilasAfectadas == 1);
+$ningunaFilaAfectada = ($numFilasAfectadas == 0);
 
-$correcto = ($sql_con_exito && $una_fila_afectada);
+// Está todo correcto de forma NORMAL si NO ha habido errores y se ha visto afectada UNA fila.
+$correcto = ($sqlConExito && $unaFilaAfectada);
 
-$datos_no_modificados = ($sql_con_exito && $ninguna_fila_afectada);
+// Si los datos no se habían modificado, también está correcto, pero de otra manera.
+$datosNoModificados = ($sqlConExito && $ningunaFilaAfectada);
 ?>
 
 
@@ -34,7 +46,7 @@ $datos_no_modificados = ($sql_con_exito && $ninguna_fila_afectada);
 <html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset='UTF-8'>
 </head>
 
 
@@ -42,7 +54,8 @@ $datos_no_modificados = ($sql_con_exito && $ninguna_fila_afectada);
 <body>
 
 <?php
-if ($correcto || $datos_no_modificados) { ?>
+// Todo bien tanto si se han guardado los datos nuevos como si no se habían modificado.
+if ($correcto || $datosNoModificados) { ?>
 
     <?php if ($id == -1) { ?>
         <h1>Inserción completada</h1>
@@ -51,8 +64,8 @@ if ($correcto || $datos_no_modificados) { ?>
         <h1>Guardado completado</h1>
         <p>Se han guardado correctamente los datos de <?php echo $nombre; ?>.</p>
 
-        <?php if ($datos_no_modificados) { ?>
-            <p>No ha habido ninguna modificacion.</p>
+        <?php if ($datosNoModificados) { ?>
+            <p>En realidad, no había modificado nada, pero no está de más que se haya asegurado pulsando el botón de guardar :)</p>
         <?php } ?>
     <?php }
     ?>
@@ -68,7 +81,7 @@ if ($correcto || $datos_no_modificados) { ?>
 }
 ?>
 
-<a href="persona-listado.php">Volver al listado de persona.</a>
+<a href='personaListado.php'>Volver al listado de personas.</a>
 
 </body>
 
