@@ -1,0 +1,16 @@
+
+NUEVOS DEBERES GRUPO .1 (para lunes):
+
+Incoroporar temas en la agenda, utilizando la $_SESSION como soporte para recordar qué tema tenemos puesto.
+Link en la parte superior para cambiar de tema.
+
+PHP
+    session_start();
+    if (!isset($_S["tema"]) & !isset($_R["tema"]))
+
+        --> $_S["tema"] = por defecto
+    else if (isset($_R["tema"]))
+
+        --> $_S["tema"] = $_R["tema"]
+luego
+    ya está en $_S["tema"]
