@@ -3,11 +3,11 @@
     // TODO: En esta página, si hay sesión iniciada, mostrar la info y si no poner un link para iniciar sesión,
     // pero cualquiera puede verla, tenga sesión iniciada o no.
 
- require_once "_Varios.php";
- if(haySesionIniciada()) {
-    echo $_SESSION["identificador"];
-    echo "<br/><a href='SesionCerrar.php'>Cerrar Sesion</a>";
-}
+    require_once "_Varios.php";
+    if(haySesionIniciada()) {
+        echo $_SESSION["identificador"];
+        echo "<br/><a href='SesionCerrar.php'>Cerrar Sesion</a>";
+    }
 
 ?>
 

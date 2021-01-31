@@ -40,20 +40,17 @@ function obtenerUsuario($identificador, $contrasenna): ?array
     $rs = $sentencia->fetchAll();
 
     if($correcto) {
-        return ["id" => $rs[0]["id"], "identificador" => $rs[0]["identificador"], "contrasenna" => $rs[0]["contrasenna"],
-            "codigoCookie" => $rs[0]["codigoCookie"], "tipoUsuario" => $rs[0]["tipoUsuario"], "nombre" => $rs[0]["nombre"],
-            "apellidos" => $rs[0]["apellidos"], "foto" => $rs[0]["foto"]];
+        return ["id" => $rs[0]["id"], "identificador" => $rs[0]["identificador"], "contrasenna" => $rs[0]["contrasenna"], 
+        "codigoCookie" => $rs[0]["codigoCookie"], "tipoUsuario" => $rs[0]["tipoUsuario"], "nombre" => $rs[0]["nombre"], 
+        "apellidos" => $rs[0]["apellidos"], "foto" => $rs[0]["foto"]];
     }else
         return null;
 
 }
 
-function marcarSesionComoIniciada(array $arrayUsuario)
+function marcarSesionComoIniciada($arrayUsuario)
 {
     // TODO Anotar en el post-it todos estos datos:
-    // $_SESSION["id"] = ...
-    // $_SESSION["identificador"] = ...
-    // ...
     $_SESSION["id"] = $arrayUsuario["id"];
     $_SESSION["identificador"] = $arrayUsuario["identificador"];
     $_SESSION["contrasenna"] = $arrayUsuario["contrasenna"];
@@ -63,11 +60,8 @@ function marcarSesionComoIniciada(array $arrayUsuario)
     $_SESSION["foto"] = $arrayUsuario["foto"];
 }
 
-function haySesionIniciada(): ?bool
+function haySesionIniciada(): ?bool //se llama bool No boolean
 {
-    // TODO Pendiente hacer la comprobación
-    // Está iniciada si isset($_SESSION["id"])
-
     if(isset($_SESSION["id"])) {
         $conectado = true;
     } else {
@@ -90,13 +84,45 @@ function cerrarSesion()
     unset($_SESSION["foto"]);
 }
 
+function crearUsuario($identificador, $contrasenna, $nombre, $apellidos, $foto)
+{
+    $pdo= obtenerPdoConexionBD();
+
+    $sql= "SELECT * FROM Usuario WHERE identificador=?";
+    $sentencia = $pdo->prepare($sql);
+    $sqlExito = $sentencia->execute([$identificador]);
+    $rs = $sentencia->fetchAll();
+
+    if(!rs[0]) {
+        $sql= "INSERT INTO usuario(identificador, contrasenna, nombre, apellidos, foto) VALUES(?, ?, ?, ?, ?)";
+        $sentencia = $pdo->prepare($sql);
+        $sqlExito = $sentencia->execute([$identificador, $contrasenna, $nombre, $apellidos, $foto]);
+    }else {
+        redireccionar("UsuarioNuevoFormulario.php?error");
+    }
+
+}
+
+function actualizarUsuarioEnBD($identificador, $contrasenna, $nombre, $apellidos, $foto)
+{
+    $pdo= obtenerPdoConexionBD();
+    $sql= "UPDATE usuario SET identificador = '$identificador', contrasenna = '$contrasenna',
+        nombre = '$nombre', apellidos = '$apellidos', foto = '$foto' WHERE id=$_SESSION[id]";
+    $select = $pdo->prepare($sql);
+    $select->execute([]);
+    $_SESSION["identificador"] = $identificador;
+    $_SESSION["contrasenna"] = $contrasenna;
+    $_SESSION["nombre"] = $nombre;
+    $_SESSION["apellidos"] = $apellidos;
+    $_SESSION["foto"] = $foto;
+}
+
 // (Esta función no se utiliza en este proyecto pero se deja por si se optimizase el flujo de navegación.)
 // Esta función redirige a otra página y deja de ejecutar el PHP que la llamó:
 function redireccionar(string $url)
 {
     header("Location: $url");
-   exit;
-
+    exit;
 }
 
 function syso(string $contenido)

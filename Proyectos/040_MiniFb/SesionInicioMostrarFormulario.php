@@ -1,7 +1,7 @@
 <?php
-if(isset($_REQUEST["incorrecto"])) {
-    echo "<p>Datos erróneos. Asegúrese que todo está bien escrito.</p>";
-}
+    if(isset($_REQUEST["incorrecto"])) {
+        echo "<p>Datos erróneos. Asegúrese que todo está bien escrito.</p>";
+    }
 ?>
 
 <html>
@@ -11,18 +11,21 @@ if(isset($_REQUEST["incorrecto"])) {
 </head>
 
 
+
 <body>
 
 <h1>Iniciar Sesión</h1>
+
 <form action="SesionInicioComprobar.php" method="post">
-<label>Usuario</label>
-<input type="text" name="identificador"><br>
-<label>Contraseña</label>
-<input type="password" name="contrasenna"><br>
-<input type="submit" name="botton" value="IniciarSesion">
+    <label>Usuario</label>
+    <input type="text" name="identificador"><br>
+    <label>Contraseña</label>
+    <input type="password" name="contrasenna"><br>
+    <input type="submit" name="botton" value="IniciarSesion">
 </form>
-
-
+<form action="UsuarioNuevoFormulario.php" method="post">
+    <input type="submit" name="botton" value="Registrarse">
+</form>
 
 </body>
 
