@@ -1,17 +1,28 @@
 <?php
+// REQUERIMIENTOS
+require_once "_com/_dao.php";
+// OBTENEMOS LOS DATOS DE NUESTRO USUARIO
+$id = $_SESSION["id"];
+$identificador = $_REQUEST["identificador"];
+$contrasenna = $_REQUEST["contrasenna"];
+$nombre = $_REQUEST["nombre"];
+$apellidos = $_REQUEST["apellidos"];
 
-// TODO ...$_REQUEST["..."]...
+// ALMACENAMOS LOS DATOS EN UN ARRAY
+$arrayUsuario = [];
+$arrayUsuario[0] = $identificador;
+$arrayUsuario[1] = $contrasenna;
+$arrayUsuario[2] = $nombre;
+$arrayUsuario[3] = $apellidos;
+$arrayUsuario[4] = $id;
 
-// TODO Intentar guardar (añadir funciones en Varios.php para crear y tal).
-
-// TODO Y redirigir a donde sea.
-
-$correcto = actualizarUsuarioEnBD($arrayUsuario);
-
-// TODO ¿Excepciones?
+//PASAMOS COMO PARAMETRO DICHO ARRAY QUE ACTUALIZA LOS NUEVOS DATOS DE NUESTRO USUARIO
+$correcto = DAO::actualizarUsuarioEnBD($arrayUsuario);
 
 if ($correcto) {
-
+    // SI TODO ESTA BIEN ME REDIRIGES A MURO GLOBAL
+    redireccionar("MuroVerGlobal.php");
 } else {
-
+    // EN CASO CONTRARIO
+    echo "No hay cambios...";
 }

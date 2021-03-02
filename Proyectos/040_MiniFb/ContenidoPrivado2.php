@@ -8,8 +8,6 @@
 
 ?>
 
-
-
 <html>
 
 <head>
@@ -20,9 +18,6 @@
 
 <body>
 
-<a href="UsuarioPerfilVer.php?identificador='<?= $_SESSION["identificador"] ?>'&nombre='<?= $_SESSION["nombre"] ?>'&apellidos='<?= $_SESSION["apellidos"] ?>'"><?php echo $_SESSION["identificador"] ?></a>
-<a href="SesionCerrar.php">Cerrar Sesion</a>
-
 <h1>Contenido Privado 2</h1>
 
 <p>Praesent sit amet tincidunt nibh, quis gravida ligula. Maecenas vel efficitur ipsum, nec scelerisque turpis. Aliquam laoreet massa et augue sodales consequat. Nunc arcu nulla, malesuada interdum nunc sit amet, fermentum condimentum sem. Nam consectetur porttitor fringilla. Pellentesque ligula elit, molestie ac nisi ultricies, commodo porta turpis. Sed nec elit vitae elit pulvinar malesuada id non ex. In vulputate sapien vel auctor condimentum. Aliquam interdum tellus id eros sagittis pulvinar. Quisque sapien ipsum, pellentesque vel tortor vel, vestibulum sollicitudin dui.</p>
@@ -32,6 +27,10 @@
 <a href='ContenidoPublico1.php'>Ir al Contenido Público 1</a>
 
 <a href='ContenidoPrivado1.php'>Ir al Contenido Privado 1</a>
+
+<br>
+
+<a href="SesionCerrar.php">Cerrar Sesion</a>
 
 </body>
 

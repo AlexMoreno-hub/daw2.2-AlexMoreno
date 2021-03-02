@@ -1,7 +1,8 @@
 <?php
-	require_once "_com/Varios.php";
 
-	$conexion = obtenerPdoConexionBD();
+
+require_once "_com/Varios.php";
+require_once  "_com/DAO.php";
 	
 	// Se recoge el parámetro "id" de la request.
 	$id = (int)$_REQUEST["id"];
@@ -18,29 +19,26 @@
         $personaEstrella = false;
 		$personaCategoriaId = 0;
 	} else { // Quieren VER la ficha de una persona existente, cuyos datos se cargan.
-        $sqlPersona = "SELECT * FROM Persona WHERE id=?";
 
-        $select = $conexion->prepare($sqlPersona);
-        $select->execute([$id]); // Se añade el parámetro a la consulta preparada.
-        $rsPersona = $select->fetchAll();
+        $persona = DAO::personaObtenerPorId($id);
+        $personaNombre = $persona->getNombre();
+        $personaApellidos = $persona->getApellidos();
+        $personaEstrella = $persona->getEstrella();
+        $personaCategoriaId = $persona->getPersonaCategoriaId();
 
-        // Con esto, accedemos a los datos de la primera (y esperemos que única) fila que haya venido.
-		$personaNombre = $rsPersona[0]["nombre"];
-        $personaApellidos = $rsPersona[0]["apellidos"];
-		$personaTelefono = $rsPersona[0]["telefono"];
-        $personaEstrella = ($rsPersona[0]["estrella"] == 1); // En BD está como TINYINT. 0=false, 1=true. Con esto convertimos a booolean.
-		$personaCategoriaId = $rsPersona[0]["categoriaId"];
 	}
 
 	
 	
 	// Con lo siguiente se deja preparado un recordset con todas las categorías.
-	
+    $rsCategorias= DAO::personaSelectCategoria();
+
+/*
 	$sqlCategorias = "SELECT id, nombre FROM Categoria ORDER BY nombre";
 
     $select = $conexion->prepare($sqlCategorias);
     $select->execute([]); // Array vacío porque la consulta preparada no requiere parámetros.
-    $rsCategorias = $select->fetchAll();
+    $rsCategorias = $select->fetchAll();*/
 
 
 
@@ -82,10 +80,6 @@
 
     <label for='apellidos'> Apellidos</label>
     <input type='text' name='apellidos' value='<?=$personaApellidos ?>' />
-    <br/>
-
-    <label for='telefono'> Teléfono</label>
-    <input type='text' name='telefono' value='<?=$personaTelefono ?>' />
     <br/>
 
     <label for='categoriaId'>Categoría</label>

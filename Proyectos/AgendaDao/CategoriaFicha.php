@@ -1,9 +1,9 @@
 <?php
-	require_once "_com/Varios.php";
+	require_once "_com/DAO.php";
+    require_once "_com/Varios.php";
 
-	$conexion = obtenerPdoConexionBD();
-	
-	// Se recoge el parámetro "id" de la request.
+
+// Se recoge el parámetro "id" de la request.
 	$id = (int)$_REQUEST["id"];
 
 	// Si id es -1 quieren CREAR una nueva entrada ($nueva_entrada tomará true).
@@ -14,23 +14,27 @@
 	if ($nuevaEntrada) { // Quieren CREAR una nueva entrada, así que no se cargan datos.
 		$categoriaNombre = "<introduzca nombre>";
 	} else { // Quieren VER la ficha de una categoría existente, cuyos datos se cargan.
-		$sql = "SELECT nombre FROM Categoria WHERE id=?";
+
+		/*$sql = "SELECT nombre FROM Categoria WHERE id=?";
 
         $select = $conexion->prepare($sql);
         $select->execute([$id]); // Se añade el parámetro a la consulta preparada.
         $rs = $select->fetchAll();
 		
 		 // Con esto, accedemos a los datos de la primera (y esperemos que única) fila que haya venido.
-		$categoriaNombre = $rs[0]["nombre"];
+		$categoriaNombre = $rs[0]["nombre"];*/
+        $categoria = dao::categoriaObtenerPorId($id);
+        $categoriaNombre = $categoria->getNombre();
 	}
 
 
-
+    /*
     $sql = "SELECT * FROM Persona WHERE categoriaId=? ORDER BY nombre";
 
     $select = $conexion->prepare($sql);
     $select->execute([$id]); // Array vacío porque la consulta preparada no requiere parámetros.
-    $rsPersonasDeLaCategoria = $select->fetchAll();
+    $rsPersonasDeLaCategoria = $select->fetchAll();*/
+
 
 
 	// INTERFAZ:
@@ -80,11 +84,9 @@
 <p>Personas que pertenecen actualmente a la categoría:</p>
 
 <ul>
-<?php
-    foreach ($rsPersonasDeLaCategoria as $fila) {
-        echo "<li>$fila[nombre] $fila[apellidos]</li>";
-    }
-?>
+    <?php
+    $rsPersonasDeLaCategoria= dao::mostrarPersonas($id);
+    ?>
 </ul>
 
 <?php if (!$nuevaEntrada) { ?>

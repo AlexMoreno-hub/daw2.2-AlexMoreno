@@ -1,14 +1,15 @@
 <?php
 require_once "_Varios.php";
 
-$_SESSION["identificador"] = $_REQUEST["identificador"];
-$_SESSION["contrasenna"] = $_REQUEST["contrasenna"];
+$identificador = $_REQUEST["identificador"];
+$contrasenna=$_REQUEST["contrasenna"];
 
-$arrayUsuario= obtenerUsuario($_SESSION["identificador"], $_SESSION["contrasenna"]);
+$arrayUsuario = obtenerUsuario($identificador, $contrasenna);
 
 if ($arrayUsuario) {
     marcarSesionComoIniciada($arrayUsuario);
     redireccionar("ContenidoPrivado1.php");
+
 } else {
     redireccionar("SesionInicioMostrarFormulario.php?incorrecto");
 }

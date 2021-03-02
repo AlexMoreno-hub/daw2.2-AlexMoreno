@@ -1,41 +1,9 @@
 <?php
-    require_once "_com/Varios.php";
-
-    $conexion = obtenerPdoConexionBD();
-
-    session_start(); // Crear post-it vacío, o recuperar el que ya haya  (vacío o con cosas).
-    if (isset($_REQUEST["soloEstrellas"])) {
-        $_SESSION["soloEstrellas"] = true;
-    }
-    if (isset($_REQUEST["todos"])) {
-        unset($_SESSION["soloEstrellas"]);
-    }
-
-    $posibleClausulaWhere = isset($_SESSION["soloEstrellas"]) ? "WHERE p.estrella=1" : "";
-
-    $sql = "
-               SELECT
-                    p.id     AS pId,
-                    p.nombre AS pNombre,
-                    p.apellidos AS pApellidos,
-                    p.estrella AS pEstrella,
-                    c.id     AS cId,
-                    c.nombre AS cNombre
-                FROM
-                   Persona AS p INNER JOIN Categoria AS c
-                   ON p.categoriaId = c.id
-                $posibleClausulaWhere
-                ORDER BY p.nombre
-            ";
-
-    $select = $conexion->prepare($sql);
-    $select->execute([]); // Array vacío porque la consulta preparada no requiere parámetros.
-    $rs = $select->fetchAll();
+require_once "_com/Varios.php";
+require_once "_com/DAO.php";
 
 
-    // INTERFAZ:
-    // $rs
-    // $_SESSION
+$personas = DAO::personaObtenerTodos();
 ?>
 
 
@@ -56,30 +24,23 @@
 
     <tr>
         <th>Persona</th>
+        <th>Apellidos</th>
         <th>Categoría</th>
     </tr>
 
     <?php
-    foreach ($rs as $fila) { ?>
+    foreach ($personas as $fila) { ?>
         <tr>
             <td>
-                <?php
-                    $urlImagen = $fila["pEstrella"] ? "img/EstrellaRellena.png" : "img/EstrellaVacia.png";
-                    echo " <a href='PersonaEstablecerEstadoEstrella.php?id=$fila[pId]'><img src='$urlImagen' width='16' height='16'></a> ";
-
-                    echo "<a href='PersonaFicha.php?id=$fila[pId]'>";
-                    echo "$fila[pNombre]";
-                    if ($fila["pApellidos"] != "") {
-                        echo " $fila[pApellidos]";
-                    }
-                    echo "</a>";
-                ?>
+                <a href='personaFicha.php?id=<?=$fila->getId()?>'> <?= $fila->getNombre() ?> </a>
+                <a href='personaEstablecerEstadoEstrella.php?id=<?=$fila->getId()?>'>
+                    <img src='$urlImagen' width='25' height='15'></a>
             </td>
-            <td><a href= 'CategoriaFicha.php?id=<?=$fila["cId"]?>'> <?= $fila["cNombre"] ?> </a></td>
-            <td><a href='PersonaEliminar.php?id=<?=$fila["pId"]?>'> (X)                      </a></td>
+            <td><a href='personaFicha.php?id=<?=$fila->getId()?>'> <?= $fila->getApellidos() ?> </a></td>
+            <td><a href='personaFicha.php?id=<?=$fila->getId()?>'> <?= $fila->getpersonaCategoriaId() ?> </a></td>
+            <td><a href='personaEliminar.php?id=<?=$fila->getId()?>'> (X)                      </a></td>
         </tr>
     <?php } ?>
-
 </table>
 
 <br />
